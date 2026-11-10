@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="page-title mb-0">Categories</h3>
+    <a href="{% url 'category_new' %}" class="btn btn-primary">New Category</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Products</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                        <tr>
+                            <td>{{ category.name }}</td>
+                            <td>{{ category.description|default:'-' }}</td>
+                            <td>{{ category.products.count }}</td>
+                            <td class="table-action">
+                                <a href="{% url 'category_edit' category.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a href="{% url 'category_delete' category.pk %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this category?')">Delete</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4" class="empty-state">No categories found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

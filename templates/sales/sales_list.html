@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Sales History{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="page-title mb-0">Sales History</h3>
+    <a href="{% url 'pos_sale' %}" class="btn btn-primary">New Sale</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Sale No</th>
+                        <th>Customer</th>
+                        <th>Payment</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in sales %}
+                        <tr>
+                            <td>{{ sale.sale_number }}</td>
+                            <td>{{ sale.customer.name|default:'Walk-in' }}</td>
+                            <td>{{ sale.payment_method|title }}</td>
+                            <td>₦{{ sale.total_amount|floatformat:2 }}</td>
+                            <td>{{ sale.created_at|date:'M d, Y' }}</td>
+                            <td><a href="{% url 'sale_detail' sale.pk %}" class="btn btn-sm btn-outline-primary">View</a></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" class="empty-state">No sales recorded.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

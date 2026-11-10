@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="page-title mb-0">Checkout</h3>
+    <a href="{% url 'cart' %}" class="btn btn-outline-dark">Back to Cart</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="section-title mb-3">Delivery Details</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Customer</label>
+                            <select name="customer" class="form-select">
+                                <option value="">Guest checkout</option>
+                                {% for customer in customers %}
+                                    <option value="{{ customer.pk }}">{{ customer.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Delivery Date</label>
+                            <input type="date" name="delivery_date" class="form-control">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Customer Name</label>
+                            <input type="text" name="customer_name" class="form-control" placeholder="Full name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" name="customer_phone" class="form-control" placeholder="080...">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email (optional)</label>
+                            <input type="email" name="customer_email" class="form-control" placeholder="you@example.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Address</label>
+                            <input type="text" name="customer_address" class="form-control" placeholder="Delivery address">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Payment Method</label>
+                            <select name="payment_method" class="form-select">
+                                <option value="cash">Cash</option>
+                                <option value="card">Card</option>
+                                <option value="transfer">Transfer</option>
+                                <option value="mobile">Mobile Money</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Order Notes</label>
+                            <textarea name="notes" class="form-control" rows="3" placeholder="Add delivery instructions or special notes"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h5 class="section-title mb-3">Order Summary</h5>
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Qty</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in items %}
+                                        <tr>
+                                            <td>{{ item.product.name }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td>₦{{ item.subtotal|floatformat:2 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div class="fs-5 fw-bold">Total: ₦{{ total|floatformat:2 }}</div>
+                        <button type="submit" class="btn btn-primary btn-lg">Place Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="section-title">Order Notes</h5>
+                <ul class="mb-0 ps-3 text-muted">
+                    <li>Stock is reduced automatically after order confirmation.</li>
+                    <li>Delivery date can be scheduled for later.</li>
+                    <li>Orders can be tracked from the main orders dashboard.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

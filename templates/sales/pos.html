@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Point of Sale{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="page-title mb-0">Point of Sale</h3>
+            <a href="{% url 'sales_list' %}" class="btn btn-outline-secondary">Sales History</a>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">Customer</label>
+                    <select name="customer" class="form-select">
+                        <option value="">Walk-in customer</option>
+                        {% for customer in customers %}
+                            <option value="{{ customer.pk }}">{{ customer.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Discount</label>
+                    <input type="number" name="discount" class="form-control" min="0" step="0.01" value="0">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Payment Method</label>
+                    <select name="payment_method" class="form-select">
+                        <option value="cash">Cash</option>
+                        <option value="card">Card</option>
+                        <option value="transfer">Transfer</option>
+                        <option value="mobile">Mobile Money</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="sale-items">
+                <div class="product-row row g-3 align-items-end mb-3">
+                    <div class="col-md-7">
+                        <label class="form-label">Product</label>
+                        <select name="product_id" class="form-select">
+                            {% for product in products %}
+                                <option value="{{ product.pk }}">{{ product.name }} (₦{{ product.selling_price }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Quantity</label>
+                        <input type="number" name="quantity" class="form-control" value="1" min="1">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger remove-row w-100">Remove</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mb-3">
+                <button type="button" class="btn btn-outline-primary" id="add-item-row">Add Product</button>
+                <button type="submit" class="btn btn-primary">Complete Sale</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

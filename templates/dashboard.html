@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-xl-3">
+        <div class="metric-card">
+            <span>Total Revenue</span>
+            <h3>₦{{ total_revenue|floatformat:2 }}</h3>
+            <small>Completed sales</small>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="metric-card">
+            <span>Total Sales</span>
+            <h3>{{ total_sales }}</h3>
+            <small>Transactions</small>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="metric-card">
+            <span>Products</span>
+            <h3>{{ total_products }}</h3>
+            <small>Catalog items</small>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="metric-card">
+            <span>Customers</span>
+            <h3>{{ total_customers }}</h3>
+            <small>Active customers</small>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="section-title mb-0">Monthly Sales</h5>
+                    <span class="badge rounded-pill bg-warning text-dark">₦{{ total_revenue|floatformat:2 }}</span>
+                </div>
+                <canvas id="salesChart" height="120"></canvas>
+                <script>
+                    const salesChartData = {{ chart_data|safe }};
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="section-title">Low Stock</h5>
+                {% for product in low_stock %}
+                    <div class="stock-row">
+                        <div>
+                            <strong>{{ product.name }}</strong>
+                            <div class="small text-muted">{{ product.quantity }} left</div>
+                        </div>
+                        <span class="badge bg-danger">Low</span>
+                    </div>
+                {% empty %}
+                    <p class="text-muted mb-0">All products are adequately stocked.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="section-title">Best Selling Products</h5>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in best_products %}
+                                <tr>
+                                    <td>{{ item.product__name }}</td>
+                                    <td>{{ item.total_quantity }}</td>
+                                    <td>₦{{ item.total_revenue|floatformat:2 }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="3" class="text-muted">No sales yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="section-title">Recent Sales</h5>
+                {% for sale in recent_transactions %}
+                    <div class="mini-list-item">
+                        <div>
+                            <strong>{{ sale.sale_number }}</strong>
+                            <div class="small text-muted">{{ sale.customer.name|default:'Walk-in' }}</div>
+                        </div>
+                        <span>₦{{ sale.total_amount|floatformat:2 }}</span>
+                    </div>
+                {% empty %}
+                    <p class="text-muted mb-0">No recent transactions.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

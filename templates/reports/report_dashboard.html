@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="page-title mb-0">Reports & Analytics</h3>
+    <div class="d-flex gap-2">
+        <a href="{% url 'export_csv' %}?type=sales" class="btn btn-outline-primary">Export Sales CSV</a>
+        <a href="{% url 'export_csv' %}?type=expenses" class="btn btn-outline-primary">Export Expenses CSV</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="metric-card">
+            <span>Revenue</span>
+            <h3>₦{{ revenue|floatformat:2 }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="metric-card">
+            <span>Expenses</span>
+            <h3>₦{{ expense_total|floatformat:2 }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="metric-card">
+            <span>Profit</span>
+            <h3>₦{{ profit|floatformat:2 }}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="section-title">Product Stock Summary</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Min Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in stock_summary %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.min_stock }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="3" class="empty-state">No stock data.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="section-title">Filter</h5>
+                <form method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Start date</label>
+                        <input type="date" name="start_date" value="{{ start_date }}" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">End date</label>
+                        <input type="date" name="end_date" value="{{ end_date }}" class="form-control">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Apply</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
